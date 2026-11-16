@@ -121,9 +121,12 @@ ZEQUOZ ANIMATED LOGO
 .zq-iris::before{content:"";position:absolute;left:50%;top:50%;width:40%;aspect-ratio:1;margin:-20% 0 0 -20%;border-radius:50%;background:#10150c;}
 .zq-iris::after{content:"";position:absolute;left:24%;top:20%;width:20%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.92);}
 .zq-lid{position:absolute;inset:-3%;background:#FFC20E;border-radius:0 0 50% 50%;transform:translateY(-104%);}
-/* Legs (grow out of the Z, walk, then fold back) */
-.zq-legs{position:absolute;z-index:0;inset:0;opacity:0;pointer-events:none;transform-origin:50% 76%;}
-.zq-legs svg{display:block;width:100%;height:100%;overflow:visible;}
+/* Creature limbs (built by JS when the Z comes alive) */
+.zq-limbs{position:absolute;inset:0;pointer-events:none;opacity:0;}
+.zq-limbs svg{display:block;width:100%;height:100%;overflow:visible;}
+.zq-back{z-index:0;}
+.zq-front{z-index:3;}
+.zq-logo.walking .zq-limbs{opacity:1;}
 /* Intro states */
 .zq-logo.is-intro .zq-z{opacity:0;}
 .zq-logo.is-intro .zq-word{opacity:0;}
@@ -583,7 +586,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
 </style></noscript>
 <style id="fx-v2">
 /* ==========================================================================
-   FX V2 — Dock · BackToTop · Dots · Meter
+   FX V2 — Dock · BackToTop · Meter
    ========================================================================== */
 
 /* ---------- 3. Mobile booking dock ---------- */
@@ -700,61 +703,6 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   }
 }
 
-/* ---------- 5. Section dots ---------- */
-.fx-dots {
-  position: fixed;
-  left: 18px;
-  top: 50%;
-  z-index: 130;
-  display: grid;
-  gap: 14px;
-  transform: translateY(-50%);
-}
-.fx-dots button {
-  position: relative;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .22);
-  transition: transform .35s var(--ease), background .3s, box-shadow .3s;
-}
-.fx-dots button:hover {
-  transform: scale(1.5);
-  background: rgba(255, 255, 255, .6);
-}
-.fx-dots button[aria-current="true"] {
-  background: var(--gold);
-  transform: scale(1.4);
-  box-shadow: 0 0 14px rgba(255, 194, 14, .8);
-}
-.fx-dots button::after {
-  content: attr(data-label);
-  position: absolute;
-  left: 22px;
-  top: 50%;
-  padding: 6px 12px;
-  border-radius: 10px;
-  white-space: nowrap;
-  font-size: .78rem;
-  font-weight: 700;
-  color: #fff;
-  background: rgba(14, 14, 17, .88);
-  border: 1px solid var(--line);
-  opacity: 0;
-  transform: translate(-6px, -50%);
-  pointer-events: none;
-  transition: opacity .25s, transform .3s var(--ease);
-}
-.fx-dots button:hover::after {
-  opacity: 1;
-  transform: translate(0, -50%);
-}
-@media (max-width: 1100px) {
-  .fx-dots {
-    display: none;
-  }
-}
-
 /* ---------- 6. Form completion meter ---------- */
 .fx-meter {
   display: grid;
@@ -792,7 +740,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   }
 }
 @media print {
-  .fx-dock, .fx-top, .fx-dots {
+  .fx-dock, .fx-top {
     display: none !important;
   }
 }
@@ -927,15 +875,15 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
 <style id="rocket-fx">
 /* ==========================================================================
    Z ROCKET — the Z mascot RIDES a side-view rocket (legs dangling, hands
-   gripping). Crosses the sky once every 45s (~6s flight). transform/opacity only.
+   gripping). Crosses the sky once every 45s (~11s slow flight). transform/opacity only.
    ========================================================================== */
 .fx-rocket {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 90;
-  width: 140px;
-  height: 96px;
+  width: 92px;
+  height: 63px;
   pointer-events: none;
   opacity: 0;
   will-change: transform, opacity;
@@ -953,26 +901,19 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   transform-origin: 30px 70px;
   animation: rk-flicker .14s ease-in-out infinite alternate;
 }
-/* legs dangle from the hips and swing */
-.rk-leg { animation: rk-swing .55s ease-in-out infinite alternate; }
-.rk-leg-l { transform-origin: 72px 54px; }
-.rk-leg-r { transform-origin: 88px 54px; animation-delay: -.28s; }
-@keyframes rk-swing {
-  from { transform: rotate(-14deg); }
-  to   { transform: rotate(14deg); }
-}
-/* the rider bobs a little */
-.rk-rider { animation: rk-bob .4s ease-in-out infinite alternate; transform-origin: 80px 54px; }
-@keyframes rk-bob {
-  from { transform: translateY(0) rotate(-1.5deg); }
-  to   { transform: translateY(-1.6px) rotate(1.5deg); }
-}
+/* the rider is the same creature as the header logo (see initRocketRider) */
+.rk-rider { position: absolute; left: 21px; top: -8px; line-height: 0; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .55)); }
+.rk-rider .zq-logo { --h: 52px; }
+.rk-rider .zq-word { display: none; }
+.rk-rider .zq-limbs { opacity: 1; }
+.rk-far { position: absolute; left: 21px; top: -8px; width: 40px; height: 52px; pointer-events: none; }
+.rk-far svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .rk-trail {
   position: absolute;
   right: 80%;
   top: 70%;
-  width: 150px;
-  height: 8px;
+  width: 90px;
+  height: 6px;
   transform: translateY(-50%);
   border-radius: 99px;
   background: linear-gradient(270deg, rgba(255, 255, 255, .7), rgba(255, 60, 60, .45) 40%, transparent);
@@ -990,19 +931,19 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   opacity: 0;
   animation: rk-twinkle 1s ease-out infinite;
 }
-.rk-sp.sp1 { margin-right: 14px; animation-delay: 0s; }
-.rk-sp.sp2 { margin-right: 52px; margin-top: 6px; animation-delay: .33s; }
-.rk-sp.sp3 { margin-right: 92px; margin-top: -4px; animation-delay: .66s; }
+.rk-sp.sp1 { margin-right: 8px; animation-delay: 0s; }
+.rk-sp.sp2 { margin-right: 32px; margin-top: 6px; animation-delay: .33s; }
+.rk-sp.sp3 { margin-right: 58px; margin-top: -4px; animation-delay: .66s; }
 
 .rk-tag {
   position: absolute;
   right: 100%;
   top: 70%;
-  margin-right: 70px;
-  padding: 5px 14px 6px;
+  margin-right: 46px;
+  padding: 3px 11px 4px;
   border-radius: 99px;
   white-space: nowrap;
-  font: 800 .86rem/1.3 "IBM Plex Sans Arabic", var(--ff);
+  font: 800 .74rem/1.3 "IBM Plex Sans Arabic", var(--ff);
   color: #fff;
   background: linear-gradient(180deg, #1c1c20, #0b0b0d);
   border: 1px solid #e11d2e;
@@ -1012,14 +953,14 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   transform-origin: 100% 50%;
 }
 
-/* ~6s flight, then hidden until the next 45s cycle */
+/* ~11s slow flight, then hidden until the next 45s cycle */
 @keyframes rk-fly {
   0%    { opacity: 0; transform: translate3d(-18vw, 100vh, 0) rotate(-48deg); }
   1%    { opacity: 1; }
-  4.7%  { transform: translate3d(22vw, 62vh, 0) rotate(-42deg); }
-  8.7%  { transform: translate3d(58vw, 32vh, 0) rotate(-36deg); }
-  12.7% { opacity: 1; transform: translate3d(104vw, -16vh, 0) rotate(-30deg); }
-  13%, 100% { opacity: 0; transform: translate3d(108vw, -20vh, 0) rotate(-30deg); }
+  8.5%  { transform: translate3d(22vw, 62vh, 0) rotate(-42deg); }
+  16%   { transform: translate3d(58vw, 32vh, 0) rotate(-36deg); }
+  23.4% { opacity: 1; transform: translate3d(104vw, -16vh, 0) rotate(-30deg); }
+  24%, 100% { opacity: 0; transform: translate3d(108vw, -20vh, 0) rotate(-30deg); }
 }
 @keyframes rk-flicker {
   from { transform: scaleX(.8) scaleY(.9); }
@@ -1031,9 +972,12 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   100% { opacity: 0; transform: scale(.2) translateX(-16px); }
 }
 @media (max-width: 600px) {
-  .fx-rocket { width: 100px; height: 69px; }
-  .rk-trail { width: 100px; }
-  .rk-tag { font-size: .7rem; padding: 3px 10px 4px; margin-right: 46px; }
+  .fx-rocket { width: 66px; height: 45px; }
+  .rk-rider { left: 15px; top: -6px; }
+  .rk-far { left: 15px; top: -6px; width: 28.4px; height: 37px; }
+  .rk-rider .zq-logo { --h: 37px; }
+  .rk-trail { width: 64px; }
+  .rk-tag { font-size: .64rem; padding: 2px 8px 3px; margin-right: 30px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fx-rocket { display: none; }
@@ -1047,8 +991,9 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
 <a class="skip-link" href="#main">تخطي إلى المحتوى</a>
 <div class="fx-rocket" aria-hidden="true">
   <div class="rk-trail"></div>
-  <span class="rk-tag" id="rkTag">مبيعاتك هتطير</span>
+  <span class="rk-tag" id="rkTag">ابدأ الآن</span>
   <span class="rk-sp sp1"></span><span class="rk-sp sp2"></span><span class="rk-sp sp3"></span>
+  <div class="rk-far" aria-hidden="true"></div>
   <svg class="rk-svg" viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="rkBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#e4e4ea"/><stop offset="1" stop-color="#a9a9b5"/></linearGradient>
@@ -1068,43 +1013,17 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
     <path d="M118 53 C136 56 150 63 156 70 C150 77 136 84 118 87 Z" fill="#e11d2e"/>
     <rect x="34" y="52" width="9" height="36" fill="#111"/>
     <rect x="45" y="52" width="3.5" height="36" fill="#e11d2e"/>
+    <!-- saddle + grab handle (the rider sits astride) -->
+    <path d="M62 53 Q80 44 98 53 Z" fill="#e11d2e" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M96 52 Q101 41 108 52" fill="none" stroke="#111" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M96 52 Q101 41 108 52" fill="none" stroke="#e11d2e" stroke-width="2" stroke-linecap="round"/>
     <!-- porthole -->
     <circle cx="112" cy="72" r="7" fill="#111"/>
     <circle cx="112" cy="72" r="4.6" fill="#8fd3ff"/>
     <circle cx="110.5" cy="70.5" r="1.4" fill="#fff"/>
 
-    <!-- the rider: Z mascot sitting on the rocket -->
-    <g class="rk-rider">
-      <!-- dangling legs (behind the body of the Z) -->
-      <g class="rk-leg rk-leg-r">
-        <path d="M88 54 Q86 70 89 85" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-        <path d="M88 54 Q86 70 89 85" fill="none" stroke="url(#rkZ)" stroke-width="4" stroke-linecap="round"/>
-        <path d="M84 84 Q96 81 98 89 Q97 95 86 94 Q82 93 84 84 Z" fill="#e11d2e" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
-      </g>
-      <g class="rk-leg rk-leg-l">
-        <path d="M72 54 Q70 70 73 85" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-        <path d="M72 54 Q70 70 73 85" fill="none" stroke="url(#rkZ)" stroke-width="4" stroke-linecap="round"/>
-        <path d="M68 84 Q80 81 82 89 Q81 95 70 94 Q66 93 68 84 Z" fill="#e11d2e" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
-      </g>
-
-      <!-- Z body -->
-      <g transform="translate(62 16) scale(.62)">
-        <path d="M4 4H60V18L30 48H60V62H4V48L34 18H4Z" fill="url(#rkZ)" stroke="#111" stroke-width="3.4" stroke-linejoin="round"/>
-        <!-- teeth under the left tip of the top bar -->
-        <path d="M5 19.5l3.2 6 3.2-6 3.2 6 3.2-6 3.2 6 3.2-6 3.2 6 3.2-6z" fill="#fff" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/>
-        <!-- big round eye (top-right, like the logo) -->
-        <circle cx="56" cy="5" r="13" fill="#fff" stroke="#e6a800" stroke-width="3"/>
-        <circle cx="57" cy="6" r="7.2" fill="#3da82b"/>
-        <circle cx="57.5" cy="6.5" r="3.6" fill="#0e3a0b"/>
-        <circle cx="55" cy="3.4" r="1.8" fill="#fff"/>
-        <path d="M44 -6 L64 -1" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-      </g>
-      <!-- arm gripping the rocket -->
-      <path d="M92 40 Q104 42 106 52" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/>
-      <path d="M92 40 Q104 42 106 52" fill="none" stroke="url(#rkZ)" stroke-width="3.2" stroke-linecap="round"/>
-      <circle cx="106.5" cy="52.5" r="4.2" fill="#ffc20e" stroke="#111" stroke-width="2"/>
-    </g>
   </svg>
+  <div class="rk-rider"><span data-logo data-rider></span></div>
 </div>
 <div class="ambient" aria-hidden="true"><i data-par="0.06"></i><i data-par="-0.045"></i></div>
 
@@ -1493,27 +1412,15 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
   <img id="lbImg" alt="">
 </div>
 
-<!-- Animated logo template: Z + eye + legs + wordmark, built from the official llogo.png -->
+<!-- Animated logo template: Z + eye + limbs + wordmark, built from the official llogo.png -->
 <template id="logoTpl">
   <span class="zq-logo" role="img" aria-label="ZeQuoz — E-commerce Growth Partner">
     <span class="zq-word" aria-hidden="true"></span>
     <span class="zq-z" aria-hidden="true">
-      <span class="zq-legs">
-        <svg viewBox="0 0 186 239" aria-hidden="true">
-          <g class="zq-leg zq-leg-l" style="transform-origin:104px 176px">
-            <path d="M104 176 L100 226" fill="none" stroke="#E39F00" stroke-width="15" stroke-linecap="round"/>
-            <path d="M104 176 L100 226" fill="none" stroke="#FFC20E" stroke-width="10" stroke-linecap="round"/>
-            <path d="M88 224 Q112 218 120 232 Q119 243 96 243 Q84 242 88 224 Z" fill="#fff" stroke="#2a2000" stroke-width="3" stroke-linejoin="round"/>
-          </g>
-          <g class="zq-leg zq-leg-r" style="transform-origin:140px 176px">
-            <path d="M140 176 L136 226" fill="none" stroke="#E39F00" stroke-width="15" stroke-linecap="round"/>
-            <path d="M140 176 L136 226" fill="none" stroke="#FFC20E" stroke-width="10" stroke-linecap="round"/>
-            <path d="M124 224 Q148 218 156 232 Q155 243 132 243 Q120 242 124 224 Z" fill="#fff" stroke="#2a2000" stroke-width="3" stroke-linejoin="round"/>
-          </g>
-        </svg>
-      </span>
+      <span class="zq-limbs zq-back"></span>
       <span class="zq-zbody"></span>
       <span class="zq-eye"><span class="zq-iris"></span><span class="zq-lid"></span></span>
+      <span class="zq-limbs zq-front"></span>
     </span>
   </span>
 </template>
@@ -1605,46 +1512,149 @@ async function playIntro(logo){
   finish();
 }
 
-/* The Z grows two legs, walks right, then left, comes back and folds the legs away.
-   Repeats every 15 seconds (start to start). */
+/* The Z turns into a little creature: legs, arms and a tail pop out, it walks right,
+   turns around, walks left, turns again, returns, then folds everything back into a plain Z.
+   Repeats every 15 seconds. Limbs are posed procedurally (thigh + knee + foot, shoulder + elbow). */
+function buildLimbs(logo, opts){
+  const back = $('.zq-back', logo), front = $('.zq-front', logo);
+  if (back.dataset.built) return;
+  const D = Object.assign({T:24, S:26, U:20, F:19}, opts || {});   // thigh, shin, upper-arm, forearm lengths
+  logo._dim = D;
+  const seg = (d, c, o, w) => `<path d="${d}" fill="none" stroke="${o}" stroke-width="${w+4}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const leg = (id, c, o) => `<g data-r="${id}">${seg('M0 0V'+D.T, c, o, 11)}<g data-s="${id}">${seg('M0 0V'+D.S, c, o, 10)}<g data-f="${id}"><path d="M7 -3Q-10 -8 -19 3Q-21 11 7 11Z" fill="#fff" stroke="#2a2000" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 8H-19" stroke="#2a2000" stroke-width="3" stroke-linecap="round"/></g></g></g>`;
+  const arm = (id, c, o) => `<g data-r="${id}">${seg('M0 0V'+D.U, c, o, 9)}<g data-s="${id}">${seg('M0 0V'+D.F, c, o, 8)}<g data-f="${id}"><circle cy="0" r="6.5" fill="${c}" stroke="${o}" stroke-width="2.6"/></g></g></g>`;
+  const wrap = inner => `<svg viewBox="0 0 186 239" aria-hidden="true">${inner}</svg>`;
+  back.innerHTML = wrap(
+    `<g data-r="tail"><path d="M0 -8Q30 -6 42 -40Q38 6 0 15Z" fill="#E9A500" stroke="#A87000" stroke-width="3" stroke-linejoin="round"/></g>` +
+    arm('armB', '#E9A500', '#A87000') + leg('legB', '#E9A500', '#A87000') + leg('legF', '#FFC20E', '#C98700'));
+  front.innerHTML = wrap(arm('armF', '#FFC20E', '#C98700'));
+  back.dataset.built = '1';
+  const g = (root, k) => $(`[data-${k}="${root}"]`, logo);
+  const refs = {};
+  ['tail','armB','armF','legB','legF'].forEach(n => { refs[n] = {r:g(n,'r'), s:g(n,'s'), f:g(n,'f')}; });
+  logo._limbs = refs;
+}
+/* pose(name, hipX, hipY, scale, thighOrShoulderAngle, kneeOrElbowAngle, footAngle) */
+function makePose(logo){
+  const L = logo._limbs, D = logo._dim;
+  return (n, hx, hy, k, th, kn, ft) => {
+    const o = L[n], leg = n.startsWith('leg');
+    o.r.setAttribute('transform', `translate(${hx} ${hy}) scale(${(+k).toFixed(3)}) rotate(${th.toFixed(1)})`);
+    if (o.s) o.s.setAttribute('transform', `translate(0 ${leg ? D.T : D.U}) rotate(${kn.toFixed(1)})`);
+    if (o.f) o.f.setAttribute('transform', `translate(0 ${leg ? D.S : D.F}) rotate(${ft.toFixed(1)})`);
+  };
+}
+
 async function walkOnce(logo){
-  const z = $('.zq-z', logo), legs = $('.zq-legs', logo), eye = logo._eye;
-  const legL = $('.zq-leg-l', logo), legR = $('.zq-leg-r', logo);
+  buildLimbs(logo);
+  const L = logo._limbs, z = $('.zq-z', logo), eye = logo._eye;
   const zw = z.getBoundingClientRect().width;
   const goR = zw * 1.15, goL = -Math.min(zw * .35, 14);
-  const stepLeg = (g, delay) => g.animate([{transform:'rotate(-24deg)'},{transform:'rotate(24deg)'}],{duration:360,direction:'alternate',iterations:Infinity,easing:'ease-in-out',delay});
-  const steps = [];
-  let bob;
+  const st = {x:0, s:1, sx:1, sy:1, k:0, a:0, ph:0};
+  const pose = makePose(logo);
+  const legAng = ph => { const th = 26*st.a*Math.sin(ph), kn = -(50*Math.max(0,Math.cos(ph)) + 5)*st.a; return [th, kn, -(th+kn)*.85]; };
+  const render = () => {
+    const k = st.k, ph = st.ph, a = st.a;
+    let t1 = legAng(ph), t2 = legAng(ph + Math.PI);
+    pose('legF', 135, 174, k, t1[0], t1[1], t1[2]);
+    pose('legB', 96, 174, k, t2[0], t2[1], t2[2]);
+    const sF = Math.sin(ph);
+    pose('armF', 136, 112, k, -30*a*sF, (16 + 24*Math.max(0,-sF))*a, 0);
+    pose('armB', 104, 120, k, 30*a*sF, (16 + 24*Math.max(0,sF))*a, 0);
+    L.tail.r.setAttribute('transform', `translate(152 160) scale(${k.toFixed(3)}) rotate(${(-4 + 9*Math.sin(ph*2)*Math.max(.35,a)).toFixed(1)})`);
+    const bob = -Math.abs(Math.sin(ph)) * 1.7 * a, tilt = 2 * Math.sin(ph) * a;
+    z.style.transform = `translate(${st.x.toFixed(2)}px,${bob.toFixed(2)}px) rotate(${tilt.toFixed(2)}deg) scale(${(st.s*st.sx).toFixed(3)},${st.sy.toFixed(3)})`;
+  };
+  const seg = (d, fn) => new Promise(res => {
+    const t0 = performance.now();
+    const tick = now => { const t = Math.min(1, (now - t0)/d); fn(t); render(); t < 1 ? requestAnimationFrame(tick) : res(); };
+    requestAnimationFrame(tick);
+  });
+  const walk = (to, d) => { const from = st.x; return seg(d, t => {
+    const p = (1 - Math.cos(Math.PI*t))/2, nx = from + (to - from)*p;
+    st.ph += Math.abs(nx - st.x) / (.26*zw) * Math.PI;
+    st.a = Math.min(1, Math.PI/2*Math.sin(Math.PI*t)*.75);
+    st.x = nx;
+  }); };
+  const turn = (to, d) => { const from = st.s; return seg(d, t => { st.s = from + (to - from)*((1 - Math.cos(Math.PI*t))/2); st.a *= .9; st.ph += .02; }); };
   try {
     logo.classList.add('walking');
-    eye.stop();
-    // legs grow out of the Z
-    await legs.animate([
-      {opacity:0,transform:'scaleY(.05)'},
-      {opacity:1,transform:'scaleY(1.08)',offset:.7},
-      {opacity:1,transform:'scaleY(1)'}
-    ],{duration:520,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}).finished;
-    steps.push(stepLeg(legL,0), stepLeg(legR,-360));
-    try { bob = z.animate([{translate:'0 0'},{translate:'0 -2px'}],{duration:360,direction:'alternate',iterations:Infinity,easing:'ease-in-out'}); } catch(e){}
-
-    eye.look(1,0);
-    await z.animate([{transform:'translateX(0px)'},{transform:`translateX(${goR}px)`}],{duration:2000,easing:'ease-in-out',fill:'forwards'}).finished;
-    eye.look(0,.3); await sleep(250);
-    eye.look(-1,0);
-    await z.animate([{transform:`translateX(${goR}px)`},{transform:`translateX(${goL}px)`}],{duration:2600,easing:'ease-in-out',fill:'forwards'}).finished;
-    eye.look(0,.3); await sleep(250);
-    eye.look(1,0);
-    await z.animate([{transform:`translateX(${goL}px)`},{transform:'translateX(0px)'}],{duration:1000,easing:'ease-in-out',fill:'forwards'}).finished;
-    steps.forEach(a => a.cancel()); if (bob) bob.cancel();
-    eye.look(0,0);
-    await legs.animate([{opacity:1,transform:'scaleY(1)'},{opacity:0,transform:'scaleY(.05)'}],{duration:450,easing:'ease-in',fill:'forwards'}).finished;
+    z.style.transformOrigin = '61% 76%';
+    eye.stop(); render();
+    // 1) transformation: limbs pop out with an elastic overshoot, body squashes then stretches
+    await seg(750, t => {
+      const c1 = 1.9, c3 = c1 + 1, e = 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2);
+      st.k = Math.max(0, e);
+      st.sy = 1 - .1*Math.sin(Math.PI*Math.min(1, t*1.5)) + .05*Math.sin(Math.PI*t);
+      st.sx = 1 + .05*Math.sin(Math.PI*Math.min(1, t*1.5));
+    });
+    st.k = 1; st.sx = 1; st.sy = 1;
+    await sleep(150);
+    // the creature's snout points left, so it turns to face where it is heading
+    eye.look(-1,.35); await turn(-1, 420); eye.look(-1,0);
+    await walk(goR, 2500);
+    eye.look(-1,.35); await turn(1, 420); eye.look(-1,0);
+    await walk(goL, 3000);
+    eye.look(-1,.35); await turn(-1, 420); eye.look(-1,0);
+    await walk(0, 1300);
+    await turn(1, 420);
+    st.a = 0; render(); await sleep(200);
+    eye.look(0,0); await eye.blink();
+    // 2) back to a plain letter: limbs shrink away
+    await seg(500, t => { st.k = 1 - t*t; });
+    st.k = 0; render();
   } catch(err){ /* ignore */ }
-  steps.forEach(a => a.cancel()); if (bob) bob.cancel();
-  z.getAnimations().forEach(a => a.cancel());
-  legs.getAnimations().forEach(a => a.cancel());
+  z.style.transform = ''; z.style.transformOrigin = '';
   eye.look(0,0); eye.idle();
   logo.classList.remove('walking');
 }
+
+/* The rocket's rider is the very same creature as the header logo, riding the rocket like a horse:
+   seated on a saddle, one leg each side of the rocket (the far leg hangs behind the body), upright
+   torso leaning slightly forward, both hands gripping the handle, tail streaming behind.
+   Only animates while the rocket flies. */
+function initRocketRider(){
+  const rocket = $('.fx-rocket'), slot = $('[data-rider]'), far = $('.rk-far');
+  if (!rocket || !slot) return;
+  const logo = $('.zq-logo', slot); if (!logo) return;
+  logo._idle = false; logo._eye.stop(); logo._eye.look(-.9, -.1);
+  buildLimbs(logo, {T:42, S:46, U:38, F:36});
+  const L = logo._limbs, z = $('.zq-z', logo), pose = makePose(logo);
+  z.style.transformOrigin = '61% 76%';
+  // the far leg lives behind the rocket body (own layer), so the rider really straddles it
+  let farSvg = null;
+  if (far) {
+    far.innerHTML = '<svg viewBox="0 0 186 239" aria-hidden="true"></svg>';
+    farSvg = far.firstChild; farSvg.appendChild(L.legB.r);
+    far.style.transformOrigin = '61% 76%';
+  }
+  let raf = 0, stopT = 0, lastBlink = 0;
+  const draw = now => {
+    const w = now/1000 * Math.PI * 2 * 1.1, a = Math.sin(w), c = Math.cos(w);
+    // legs: thighs forward, shins back down, feet in "stirrups"; tiny bounce
+    pose('legF', 135, 174, 1.12, 30 + 4*a, -(36 + 5*c), -(30 + 4*a - 36 - 5*c)*.3);
+    pose('legB', 96, 174, 1.32, 36 - 4*a, -(42 - 5*c), -(36 - 4*a - 42 + 5*c)*.3);
+    // both hands forward on the handle
+    pose('armF', 136, 112, 1.25, 76 + 2*a, -38, 0);
+    pose('armB', 104, 120, 1.25, 62 + 2*a, -30, 0);
+    L.tail.r.setAttribute('transform', `translate(152 160) scale(1.2) rotate(${(-16 + 11*Math.sin(w*2.4)).toFixed(1)})`);
+    const t = `translateY(${(-.5*Math.sin(w*2)).toFixed(2)}px) rotate(${(4 + 1.2*a).toFixed(2)}deg) scaleX(-1)`;
+    z.style.transform = t;
+    if (far) far.style.transform = t;
+    if (now - lastBlink > 2600) { lastBlink = now; logo._eye.blink(); }
+    raf = requestAnimationFrame(draw);
+  };
+  const start = e => {
+    if (e.animationName !== 'rk-fly') return;
+    cancelAnimationFrame(raf); clearTimeout(stopT);
+    raf = requestAnimationFrame(draw);
+    stopT = setTimeout(() => cancelAnimationFrame(raf), 12500);
+  };
+  rocket.addEventListener('animationstart', start);
+  rocket.addEventListener('animationiteration', start);
+  draw(performance.now()); cancelAnimationFrame(raf);   // initial pose
+}
+
 function startWalking(logo){
   if (RM) return;
   let busy = false;
@@ -1657,6 +1667,7 @@ function startWalking(logo){
 }
 
 mountLogos();
+initRocketRider();
 $$('[data-logo][data-intro]').forEach(slot => {
   const logo = slot._logo;
   if (!logo) return;
@@ -2123,7 +2134,7 @@ $('#tyBack').addEventListener('click', closeThanks);
 <script id="fx-v2-js">
 /* ==========================================================================
    FX V2 — modules: Dock ·
-   BackToTop · SectionDots · FormMeter
+   BackToTop · FormMeter
    ========================================================================== */
 (() => {
   'use strict';
@@ -2190,38 +2201,6 @@ $('#tyBack').addEventListener('click', closeThanks);
   }
 
   /* ------------------------------------------------------------------ *
-   * 7. Section dots (built from the page's own headings)               *
-   * ------------------------------------------------------------------ */
-  function initSectionDots() {
-    const sections = [...document.querySelectorAll('main > section')]
-      .filter(s => s.offsetHeight > 120);
-    if (sections.length < 3) return;
-    const nav = make('nav', 'fx-dots');
-    nav.setAttribute('aria-label', 'أقسام الصفحة');
-    const dots = sections.map((sec, i) => {
-      const h = sec.querySelector('h1, h2');
-      const label = h ? h.textContent.replace(/\s+/g, ' ').trim().slice(0, 34) : 'قسم ' + (i + 1);
-      const b = make('button');
-      b.type = 'button';
-      b.dataset.label = label;
-      b.setAttribute('aria-label', label);
-      b.addEventListener('click', () => sec.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }));
-      nav.appendChild(b);
-      return b;
-    });
-    document.body.appendChild(nav);
-
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const idx = sections.indexOf(e.target);
-        dots.forEach((d, k) => d.setAttribute('aria-current', k === idx ? 'true' : 'false'));
-      });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    sections.forEach(s => io.observe(s));
-  }
-
-  /* ------------------------------------------------------------------ *
    * 8. Form: completion meter + phone digit normalisation              *
    * ------------------------------------------------------------------ */
   function initFormMeter() {
@@ -2264,25 +2243,11 @@ $('#tyBack').addEventListener('click', closeThanks);
   /* ------------------------------------------------------------------ *
    * Boot — each module is isolated so one failure never breaks the page *
    * ------------------------------------------------------------------ */
-  [initDock, initBackToTop, initSectionDots, initFormMeter].forEach(fn => {
+  [initDock, initBackToTop, initFormMeter].forEach(fn => {
     try { fn(); } catch (err) { console.warn('[fx-v2]', fn.name, err); }
   });
 })();
 </script>
-<script id="rocket-msg">
-/* Rocket messages — a new line each 45s flight, cycling in order */
-(() => {
-  const rocket = document.querySelector('.fx-rocket');
-  const tag = document.getElementById('rkTag');
-  if (!rocket || !tag) return;
-  const messages = ['مبيعاتك هتطير', 'ابدأ الآن', 'أوردراتك هتطير'];
-  let i = 0;
-  rocket.addEventListener('animationiteration', e => {
-    if (e.animationName !== 'rk-fly') return;
-    i = (i + 1) % messages.length;
-    tag.textContent = messages[i];
-  });
-})();
-</script>
+
 </body>
 </html>
