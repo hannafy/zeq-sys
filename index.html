@@ -5,8 +5,7 @@
   ---------------------------------------------------------------------
   Architecture
     1. <head>   Meta, Open Graph, JSON-LD, design tokens, stylesheet
-    2. <body>
-<a class="skip-link" href="#main">تخطي إلى المحتوى</a>   Hero · Proof · Method · Gallery · Offer · Application
+    2. body     Hero · Proof · Method · Gallery · Offer · Application
     3. Scripts  Core utils · Motion · Carousel · Form · 3D scene
   Conventions
     - Design tokens live in :root (--gold, --glass-*, --ease, --r-*)
@@ -31,7 +30,7 @@
 <link rel="preload" as="image" href="llogo.png"> <!-- ZEQUOZ LOGO -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ==========================================================================
@@ -122,15 +121,13 @@ ZEQUOZ ANIMATED LOGO
 .zq-iris::before{content:"";position:absolute;left:50%;top:50%;width:40%;aspect-ratio:1;margin:-20% 0 0 -20%;border-radius:50%;background:#10150c;}
 .zq-iris::after{content:"";position:absolute;left:24%;top:20%;width:20%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.92);}
 .zq-lid{position:absolute;inset:-3%;background:#FFC20E;border-radius:0 0 50% 50%;transform:translateY(-104%);}
-/* Wing */
-.zq-wing{position:absolute;z-index:0;left:-42%;top:-9%;width:92%;aspect-ratio:120/100;transform-origin:96% 90%;opacity:0;pointer-events:none;}
-.zq-wing svg{display:block;width:100%;height:100%;transform-origin:96% 90%;overflow:visible;}
-.zq-logo.keep-wing .zq-wing{opacity:1;}
+/* Legs (grow out of the Z, walk, then fold back) */
+.zq-legs{position:absolute;z-index:0;inset:0;opacity:0;pointer-events:none;transform-origin:50% 76%;}
+.zq-legs svg{display:block;width:100%;height:100%;overflow:visible;}
 /* Intro states */
 .zq-logo.is-intro .zq-z{opacity:0;}
 .zq-logo.is-intro .zq-word{opacity:0;}
-.zq-logo.flying{z-index:200;pointer-events:none;}
-.zq-logo.flying .zq-z{filter:drop-shadow(0 0 16px rgba(255,194,14,.55));}
+.zq-logo.walking{z-index:200;}
 /* ==========================================================================
 HERO + SOCIAL-PROOF SECTION (premium glass / 3D system)
 ========================================================================== */
@@ -586,74 +583,8 @@ html{scrollbar-width:thin;scrollbar-color:rgba(255,194,14,.55) transparent;}
 </style></noscript>
 <style id="fx-v2">
 /* ==========================================================================
-   FX V2 — Cursor system · Spotlight · Constellation · Dock · Dots · Meter
+   FX V2 — Dock · BackToTop · Dots · Meter
    ========================================================================== */
-
-/* ---------- 1. Custom cursor (fine pointers only) ---------- */
-.fx-cursor-dot,
-.fx-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  pointer-events: none;
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity .3s, width .35s var(--ease), height .35s var(--ease),
-              background .3s, border-color .3s, margin .35s var(--ease);
-}
-.fx-cursor-dot {
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
-  background: var(--gold);
-  box-shadow: 0 0 12px rgba(255, 194, 14, .9);
-}
-.fx-cursor-ring {
-  width: 38px;
-  height: 38px;
-  margin: -19px 0 0 -19px;
-  border: 1.5px solid rgba(255, 194, 14, .55);
-  backdrop-filter: blur(1.5px);
-}
-body.has-cursor .fx-cursor-dot,
-body.has-cursor .fx-cursor-ring {
-  opacity: 1;
-}
-.fx-cursor-ring.is-link {
-  width: 64px;
-  height: 64px;
-  margin: -32px 0 0 -32px;
-  background: rgba(255, 194, 14, .1);
-  border-color: var(--gold);
-}
-.fx-cursor-ring.is-down {
-  width: 28px;
-  height: 28px;
-  margin: -14px 0 0 -14px;
-}
-
-/* ---------- 2. Spotlight + constellation canvas ---------- */
-.fx-spot {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(
-    520px circle at var(--sx, 50%) var(--sy, 30%),
-    rgba(255, 194, 14, .075),
-    transparent 65%
-  );
-}
-.fx-net {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: .6;
-}
 
 /* ---------- 3. Mobile booking dock ---------- */
 .fx-dock {
@@ -855,24 +786,326 @@ body.has-cursor .fx-cursor-ring {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fx-cursor-ring,
   .fx-dock,
   .fx-top {
     transition: none;
   }
-  .fx-net {
-    display: none;
-  }
 }
 @media print {
-  .fx-cursor-dot, .fx-cursor-ring, .fx-spot, .fx-net,
   .fx-dock, .fx-top, .fx-dots {
     display: none !important;
   }
 }
 </style>
+<style id="hero-type">
+/* ==========================================================================
+   HERO MESSAGE — editorial Arabic typography (IBM Plex Sans Arabic)
+   ========================================================================== */
+.hero-title {
+  font-family: "IBM Plex Sans Arabic", var(--ff);
+  font-weight: 700;
+  letter-spacing: 0;              /* negative tracking breaks Arabic letter joins */
+  line-height: 1.3;
+  max-width: 980px;
+  font-feature-settings: "kern", "liga", "calt";
+  font-kerning: normal;
+  text-rendering: geometricPrecision;
+  display: grid;
+  justify-items: center;
+  gap: clamp(8px, 1.4vw, 16px);
+}
+
+/* Line 1 — supporting statement */
+.hero-title .line-1 {
+  font-size: .56em;
+  font-weight: 600;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .86);
+}
+.hero-title .ht-num {
+  font-family: var(--ff-en);
+  font-weight: 700;
+  padding-inline: .15em;
+  color: #fff;
+  border-bottom: 2px solid rgba(255, 194, 14, .55);
+}
+
+/* Line 2 — the headline promise */
+.hero-title .line-2 {
+  position: relative;
+  margin-top: 0;
+  font-size: 1.14em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .5);
+}
+.hero-title .line-2 .hl {
+  display: inline-block;
+  padding-inline: .06em;
+  background: linear-gradient(100deg, #b98500 0%, #ffc20e 28%, #fff1b0 50%, #ffc20e 72%, #b98500 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 26px rgba(255, 194, 14, .32));
+  animation: ht-shine 7s ease-in-out infinite;
+}
+.hero-title .line-2::after {
+  content: "";
+  display: block;
+  width: min(46%, 330px);
+  height: 3px;
+  margin: .2em auto 0;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, #ffc20e, transparent);
+  box-shadow: 0 0 18px rgba(255, 194, 14, .7);
+}
+
+/* Line 3 — timeframe pill */
+.hero-title .ht-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  padding: .12em .8em .18em;
+  border-radius: 999px;
+  font-size: .56em;
+  font-weight: 700;
+  line-height: 1.5;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .03));
+  border: 1px solid var(--line-gold);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 10px 30px -12px rgba(0, 0, 0, .7), 0 0 36px -12px rgba(255, 194, 14, .5);
+}
+.hero-title .ht-pill i {
+  width: .4em;
+  height: .4em;
+  border-radius: 50%;
+  background: #ffc20e;
+  box-shadow: 0 0 0 0 rgba(255, 194, 14, .7);
+  animation: ht-ping 2.2s ease-out infinite;
+}
+.hero-title .ht-pill .hl {
+  font-family: var(--ff-en), "IBM Plex Sans Arabic", sans-serif;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+/* Staggered entrance (starts when .reveal gets .in) */
+.hero-title.in .line {
+  animation: ht-rise 1s var(--ease) both;
+}
+.hero-title.in .line-1 { animation-delay: .10s; }
+.hero-title.in .line-2 { animation-delay: .28s; }
+.hero-title.in .line-3 { animation-delay: .50s; }
+
+@keyframes ht-rise {
+  from { opacity: 0; transform: translateY(26px) scale(.98); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes ht-shine {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes ht-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 194, 14, .7); }
+  70%  { box-shadow: 0 0 0 .6em rgba(255, 194, 14, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 194, 14, 0); }
+}
+@media (max-width: 600px) {
+  .hero-title .line-1 { font-size: .62em; }
+  .hero-title .line-2 { font-size: 1.05em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-title.in .line,
+  .hero-title .line-2 .hl,
+  .hero-title .ht-pill i { animation: none; }
+}
+</style>
+<style id="rocket-fx">
+/* ==========================================================================
+   Z ROCKET — the Z mascot RIDES a side-view rocket (legs dangling, hands
+   gripping). Crosses the sky once every 45s (~6s flight). transform/opacity only.
+   ========================================================================== */
+.fx-rocket {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 140px;
+  height: 96px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: rk-fly 45s linear 1.2s infinite;
+}
+.rk-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 10px rgba(225, 29, 46, .55)) drop-shadow(0 5px 8px rgba(0, 0, 0, .6));
+}
+.rk-flame {
+  transform-origin: 30px 70px;
+  animation: rk-flicker .14s ease-in-out infinite alternate;
+}
+/* legs dangle from the hips and swing */
+.rk-leg { animation: rk-swing .55s ease-in-out infinite alternate; }
+.rk-leg-l { transform-origin: 72px 54px; }
+.rk-leg-r { transform-origin: 88px 54px; animation-delay: -.28s; }
+@keyframes rk-swing {
+  from { transform: rotate(-14deg); }
+  to   { transform: rotate(14deg); }
+}
+/* the rider bobs a little */
+.rk-rider { animation: rk-bob .4s ease-in-out infinite alternate; transform-origin: 80px 54px; }
+@keyframes rk-bob {
+  from { transform: translateY(0) rotate(-1.5deg); }
+  to   { transform: translateY(-1.6px) rotate(1.5deg); }
+}
+.rk-trail {
+  position: absolute;
+  right: 80%;
+  top: 70%;
+  width: 150px;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 99px;
+  background: linear-gradient(270deg, rgba(255, 255, 255, .7), rgba(255, 60, 60, .45) 40%, transparent);
+  filter: blur(2px);
+}
+.rk-sp {
+  position: absolute;
+  right: 100%;
+  top: 68%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px 2px rgba(255, 50, 50, .85);
+  opacity: 0;
+  animation: rk-twinkle 1s ease-out infinite;
+}
+.rk-sp.sp1 { margin-right: 14px; animation-delay: 0s; }
+.rk-sp.sp2 { margin-right: 52px; margin-top: 6px; animation-delay: .33s; }
+.rk-sp.sp3 { margin-right: 92px; margin-top: -4px; animation-delay: .66s; }
+
+.rk-tag {
+  position: absolute;
+  right: 100%;
+  top: 70%;
+  margin-right: 70px;
+  padding: 5px 14px 6px;
+  border-radius: 99px;
+  white-space: nowrap;
+  font: 800 .86rem/1.3 "IBM Plex Sans Arabic", var(--ff);
+  color: #fff;
+  background: linear-gradient(180deg, #1c1c20, #0b0b0d);
+  border: 1px solid #e11d2e;
+  box-shadow: 0 6px 18px -6px rgba(0, 0, 0, .85), 0 0 18px -4px rgba(225, 29, 46, .7);
+  /* counter-rotate so the text stays roughly horizontal */
+  transform: translateY(-50%) rotate(36deg);
+  transform-origin: 100% 50%;
+}
+
+/* ~6s flight, then hidden until the next 45s cycle */
+@keyframes rk-fly {
+  0%    { opacity: 0; transform: translate3d(-18vw, 100vh, 0) rotate(-48deg); }
+  1%    { opacity: 1; }
+  4.7%  { transform: translate3d(22vw, 62vh, 0) rotate(-42deg); }
+  8.7%  { transform: translate3d(58vw, 32vh, 0) rotate(-36deg); }
+  12.7% { opacity: 1; transform: translate3d(104vw, -16vh, 0) rotate(-30deg); }
+  13%, 100% { opacity: 0; transform: translate3d(108vw, -20vh, 0) rotate(-30deg); }
+}
+@keyframes rk-flicker {
+  from { transform: scaleX(.8) scaleY(.9); }
+  to   { transform: scaleX(1.2) scaleY(1.06); }
+}
+@keyframes rk-twinkle {
+  0%   { opacity: 0; transform: scale(.4); }
+  30%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.2) translateX(-16px); }
+}
+@media (max-width: 600px) {
+  .fx-rocket { width: 100px; height: 69px; }
+  .rk-trail { width: 100px; }
+  .rk-tag { font-size: .7rem; padding: 3px 10px 4px; margin-right: 46px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-rocket { display: none; }
+}
+@media print {
+  .fx-rocket { display: none !important; }
+}
+</style>
 </head>
 <body id="top">
+<a class="skip-link" href="#main">تخطي إلى المحتوى</a>
+<div class="fx-rocket" aria-hidden="true">
+  <div class="rk-trail"></div>
+  <span class="rk-tag" id="rkTag">مبيعاتك هتطير</span>
+  <span class="rk-sp sp1"></span><span class="rk-sp sp2"></span><span class="rk-sp sp3"></span>
+  <svg class="rk-svg" viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="rkBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#e4e4ea"/><stop offset="1" stop-color="#a9a9b5"/></linearGradient>
+      <linearGradient id="rkFlame" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ffb02e"/><stop offset=".7" stop-color="#ff2a2a"/><stop offset="1" stop-color="#ff2a2a" stop-opacity="0"/></linearGradient>
+      <linearGradient id="rkZ" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd84a"/><stop offset=".55" stop-color="#ffc20e"/><stop offset="1" stop-color="#e39f00"/></linearGradient>
+    </defs>
+
+    <!-- flame (tail, left) -->
+    <path class="rk-flame" d="M32 60 Q-2 70 32 80 Z" fill="url(#rkFlame)"/>
+    <!-- back fins -->
+    <path d="M34 52 L14 36 L52 52 Z" fill="#111"/>
+    <path d="M34 52 L14 36 L22 36 L46 52 Z" fill="#e11d2e"/>
+    <path d="M34 88 L14 104 L52 88 Z" fill="#111"/>
+    <path d="M34 88 L14 104 L22 104 L46 88 Z" fill="#e11d2e"/>
+    <!-- body -->
+    <path d="M32 52 H100 C130 52 150 62 156 70 C150 78 130 88 100 88 H32 Z" fill="url(#rkBody)"/>
+    <path d="M118 53 C136 56 150 63 156 70 C150 77 136 84 118 87 Z" fill="#e11d2e"/>
+    <rect x="34" y="52" width="9" height="36" fill="#111"/>
+    <rect x="45" y="52" width="3.5" height="36" fill="#e11d2e"/>
+    <!-- porthole -->
+    <circle cx="112" cy="72" r="7" fill="#111"/>
+    <circle cx="112" cy="72" r="4.6" fill="#8fd3ff"/>
+    <circle cx="110.5" cy="70.5" r="1.4" fill="#fff"/>
+
+    <!-- the rider: Z mascot sitting on the rocket -->
+    <g class="rk-rider">
+      <!-- dangling legs (behind the body of the Z) -->
+      <g class="rk-leg rk-leg-r">
+        <path d="M88 54 Q86 70 89 85" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+        <path d="M88 54 Q86 70 89 85" fill="none" stroke="url(#rkZ)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M84 84 Q96 81 98 89 Q97 95 86 94 Q82 93 84 84 Z" fill="#e11d2e" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+      </g>
+      <g class="rk-leg rk-leg-l">
+        <path d="M72 54 Q70 70 73 85" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+        <path d="M72 54 Q70 70 73 85" fill="none" stroke="url(#rkZ)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M68 84 Q80 81 82 89 Q81 95 70 94 Q66 93 68 84 Z" fill="#e11d2e" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+      </g>
+
+      <!-- Z body -->
+      <g transform="translate(62 16) scale(.62)">
+        <path d="M4 4H60V18L30 48H60V62H4V48L34 18H4Z" fill="url(#rkZ)" stroke="#111" stroke-width="3.4" stroke-linejoin="round"/>
+        <!-- teeth under the left tip of the top bar -->
+        <path d="M5 19.5l3.2 6 3.2-6 3.2 6 3.2-6 3.2 6 3.2-6 3.2 6 3.2-6z" fill="#fff" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/>
+        <!-- big round eye (top-right, like the logo) -->
+        <circle cx="56" cy="5" r="13" fill="#fff" stroke="#e6a800" stroke-width="3"/>
+        <circle cx="57" cy="6" r="7.2" fill="#3da82b"/>
+        <circle cx="57.5" cy="6.5" r="3.6" fill="#0e3a0b"/>
+        <circle cx="55" cy="3.4" r="1.8" fill="#fff"/>
+        <path d="M44 -6 L64 -1" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <!-- arm gripping the rocket -->
+      <path d="M92 40 Q104 42 106 52" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/>
+      <path d="M92 40 Q104 42 106 52" fill="none" stroke="url(#rkZ)" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="106.5" cy="52.5" r="4.2" fill="#ffc20e" stroke="#111" stroke-width="2"/>
+    </g>
+  </svg>
+</div>
 <div class="ambient" aria-hidden="true"><i data-par="0.06"></i><i data-par="-0.045"></i></div>
 
 <!-- 1. COUNTDOWN / URGENCY BAR -->
@@ -908,8 +1141,9 @@ body.has-cursor .fx-cursor-ring {
     <!-- 5. MAIN HERO -->
     <div class="hero-core">
       <h1 class="hero-title reveal" id="heroTitle">
-        <span class="line">وصل براندك من إنه بيبيع أقل من 100 ألف في الشهر إلى <em class="hl">مليون جنيه شهريًا</em></span>
-        <span class="line line-2">في <em class="hl">90 يوم</em></span>
+        <span class="line line-1">وصّل براندك من أقل من <span class="ht-num">100 ألف</span> في الشهر</span>
+        <span class="line line-2">إلى <em class="hl">مليون جنيه شهريًا</em></span>
+        <span class="line line-3"><span class="ht-pill"><i aria-hidden="true"></i>في <em class="hl">90 يوم</em></span></span>
       </h1>
 
       <div class="glass growth reveal" style="--rd:.1s" aria-hidden="true">
@@ -1259,21 +1493,22 @@ body.has-cursor .fx-cursor-ring {
   <img id="lbImg" alt="">
 </div>
 
-<!-- Animated logo template: Z + eye + wing + wordmark, built from the official llogo.png -->
+<!-- Animated logo template: Z + eye + legs + wordmark, built from the official llogo.png -->
 <template id="logoTpl">
   <span class="zq-logo" role="img" aria-label="ZeQuoz — E-commerce Growth Partner">
     <span class="zq-word" aria-hidden="true"></span>
     <span class="zq-z" aria-hidden="true">
-      <span class="zq-wing">
-        <svg viewBox="0 0 120 100" aria-hidden="true">
-          <defs>
-            <linearGradient id="wg__ID__" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E39F00"/><stop offset=".55" stop-color="#FFC20E"/><stop offset="1" stop-color="#FFE48A"/></linearGradient>
-          </defs>
-          <g fill="url(#wg__ID__)" stroke="#B87F00" stroke-opacity=".45" stroke-width=".8" stroke-linejoin="round">
-            <path d="M112 90 Q72 40 6 10 Q50 64 112 90Z"/>
-            <path d="M112 90 Q80 56 16 34 Q62 78 112 90Z"/>
-            <path d="M112 90 Q86 70 26 60 Q70 90 112 90Z"/>
-            <path d="M112 90 Q92 82 42 84 Q82 100 112 90Z"/>
+      <span class="zq-legs">
+        <svg viewBox="0 0 186 239" aria-hidden="true">
+          <g class="zq-leg zq-leg-l" style="transform-origin:104px 176px">
+            <path d="M104 176 L100 226" fill="none" stroke="#E39F00" stroke-width="15" stroke-linecap="round"/>
+            <path d="M104 176 L100 226" fill="none" stroke="#FFC20E" stroke-width="10" stroke-linecap="round"/>
+            <path d="M88 224 Q112 218 120 232 Q119 243 96 243 Q84 242 88 224 Z" fill="#fff" stroke="#2a2000" stroke-width="3" stroke-linejoin="round"/>
+          </g>
+          <g class="zq-leg zq-leg-r" style="transform-origin:140px 176px">
+            <path d="M140 176 L136 226" fill="none" stroke="#E39F00" stroke-width="15" stroke-linecap="round"/>
+            <path d="M140 176 L136 226" fill="none" stroke="#FFC20E" stroke-width="10" stroke-linecap="round"/>
+            <path d="M124 224 Q148 218 156 232 Q155 243 132 243 Q120 242 124 224 Z" fill="#fff" stroke="#2a2000" stroke-width="3" stroke-linejoin="round"/>
           </g>
         </svg>
       </span>
@@ -1290,10 +1525,9 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const KEEP_WING = false; // set true to keep the wing visible on the Z after the intro
 
 /* ========================================================================
-   1. ANIMATED LOGO (Z eye → wing → flight → wordmark)
+   1. ANIMATED LOGO (Z eye → wordmark, then the Z grows legs and walks every 15s)
    ======================================================================== */
 function makeEye(logo){
   const iris = $('.zq-iris', logo), lid = $('.zq-lid', logo);
@@ -1334,7 +1568,6 @@ function mountLogos(){
     slot.innerHTML = tpl.replace(/__ID__/g, ++logoSeq);
     const logo = $('.zq-logo', slot);
     const h = slot.style.getPropertyValue('--h'); if (h) logo.style.setProperty('--h', h);
-    if (KEEP_WING) logo.classList.add('keep-wing');
     logo._eye = makeEye(logo);
     logo._idle = true;
     if (slot.hasAttribute('data-intro') && !RM) { logo.classList.add('is-intro'); logo._idle = false; slot._logo = logo; }
@@ -1343,12 +1576,13 @@ function mountLogos(){
 }
 
 async function playIntro(logo){
-  const z = $('.zq-z', logo), wing = $('.zq-wing', logo), wsvg = $('svg', wing), word = $('.zq-word', logo), eye = logo._eye;
+  const z = $('.zq-z', logo), word = $('.zq-word', logo), eye = logo._eye;
   const E = 'cubic-bezier(.22,1,.36,1)';
   const finish = () => {
-    logo.classList.remove('is-intro','flying');
+    logo.classList.remove('is-intro');
     logo.getAnimations({subtree:true}).forEach(a => a.cancel());
     logo._idle = true; eye.look(0,0); eye.idle();
+    startWalking(logo);
   };
   try {
     // Phase 1 — Z appears, the eye comes alive
@@ -1362,49 +1596,64 @@ async function playIntro(logo){
     await eye.blink(); await sleep(260);
     await eye.blink(); await sleep(350);
 
-    // Phase 2 — the wing unfolds
-    await wing.animate([
-      {opacity:0,transform:'scale(.15) rotate(38deg)'},
-      {opacity:1,transform:'scale(1.07) rotate(-5deg)',offset:.7},
-      {opacity:1,transform:'scale(1) rotate(0deg)'}
-    ],{duration:1000,easing:E,fill:'forwards'}).finished;
-    await sleep(250);
-
-    // Phase 3 — the Z takes flight: one elegant circle across the screen
-    const W = innerWidth, H = innerHeight;
-    const r = z.getBoundingClientRect();
-    const sx = r.left + r.width/2, sy = r.top + r.height/2;
-    const cx = W/2, cy = H/2 + 10;
-    const Rx = Math.min(W*.34, 520), Ry = Math.min(H*.3, 300);
-    const S = Math.max(1.6, Math.min(4, Math.min(W,H)*.2 / r.height));
-    const th0 = Math.atan2((sy-cy)/Ry, (sx-cx)/Rx);
-    const sm = (a,b,x) => { x = Math.max(0, Math.min(1, (x-a)/(b-a))); return x*x*(3-2*x); };
-    const N = 80, frames = [];
-    for (let i = 0; i <= N; i++){
-      const t = i/N;
-      const u = t - Math.sin(2*Math.PI*t)/(2*Math.PI)*.45;           // accel / decel
-      const w = sm(0,.2,t) * (1 - sm(.8,1,t));                        // blend between dock and orbit
-      const th = th0 + 2*Math.PI*u;
-      const px = cx + Rx*Math.cos(th), py = cy + Ry*Math.sin(th);
-      const dx = (px - sx)*w, dy = (py - sy)*w;
-      const rot = w * (-12 + 26*Math.sin(2*Math.PI*u - .7));
-      const sc = 1 + w*(S-1);
-      frames.push({transform:`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px) rotate(${rot.toFixed(1)}deg) scale(${sc.toFixed(3)})`, offset:t});
-    }
-    logo.classList.add('flying');
-    const flap = wsvg.animate([{transform:'rotate(-16deg)'},{transform:'rotate(14deg)'}],{duration:260,direction:'alternate',iterations:Infinity,easing:'ease-in-out'});
-    await z.animate(frames,{duration:4300,easing:'linear',fill:'forwards'}).finished;
-    flap.cancel(); logo.classList.remove('flying');
-    await sleep(150);
-    if (!KEEP_WING) await wing.animate([{opacity:1,transform:'scale(1) rotate(0deg)'},{opacity:0,transform:'scale(.2) rotate(34deg)'}],{duration:650,easing:E,fill:'forwards'}).finished;
-
-    // Phase 4 — the wordmark appears
+    // Phase 2 — the wordmark appears
     await word.animate([
       {opacity:0,clipPath:'inset(0 100% 0 0)',transform:'translateX(-26px)',filter:'blur(8px)'},
       {opacity:1,clipPath:'inset(0 0 0 0)',transform:'translateX(0)',filter:'blur(0)'}
     ],{duration:1200,easing:E,fill:'forwards'}).finished;
   } catch(err){ /* fall through to final state */ }
   finish();
+}
+
+/* The Z grows two legs, walks right, then left, comes back and folds the legs away.
+   Repeats every 15 seconds (start to start). */
+async function walkOnce(logo){
+  const z = $('.zq-z', logo), legs = $('.zq-legs', logo), eye = logo._eye;
+  const legL = $('.zq-leg-l', logo), legR = $('.zq-leg-r', logo);
+  const zw = z.getBoundingClientRect().width;
+  const goR = zw * 1.15, goL = -Math.min(zw * .35, 14);
+  const stepLeg = (g, delay) => g.animate([{transform:'rotate(-24deg)'},{transform:'rotate(24deg)'}],{duration:360,direction:'alternate',iterations:Infinity,easing:'ease-in-out',delay});
+  const steps = [];
+  let bob;
+  try {
+    logo.classList.add('walking');
+    eye.stop();
+    // legs grow out of the Z
+    await legs.animate([
+      {opacity:0,transform:'scaleY(.05)'},
+      {opacity:1,transform:'scaleY(1.08)',offset:.7},
+      {opacity:1,transform:'scaleY(1)'}
+    ],{duration:520,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'}).finished;
+    steps.push(stepLeg(legL,0), stepLeg(legR,-360));
+    try { bob = z.animate([{translate:'0 0'},{translate:'0 -2px'}],{duration:360,direction:'alternate',iterations:Infinity,easing:'ease-in-out'}); } catch(e){}
+
+    eye.look(1,0);
+    await z.animate([{transform:'translateX(0px)'},{transform:`translateX(${goR}px)`}],{duration:2000,easing:'ease-in-out',fill:'forwards'}).finished;
+    eye.look(0,.3); await sleep(250);
+    eye.look(-1,0);
+    await z.animate([{transform:`translateX(${goR}px)`},{transform:`translateX(${goL}px)`}],{duration:2600,easing:'ease-in-out',fill:'forwards'}).finished;
+    eye.look(0,.3); await sleep(250);
+    eye.look(1,0);
+    await z.animate([{transform:`translateX(${goL}px)`},{transform:'translateX(0px)'}],{duration:1000,easing:'ease-in-out',fill:'forwards'}).finished;
+    steps.forEach(a => a.cancel()); if (bob) bob.cancel();
+    eye.look(0,0);
+    await legs.animate([{opacity:1,transform:'scaleY(1)'},{opacity:0,transform:'scaleY(.05)'}],{duration:450,easing:'ease-in',fill:'forwards'}).finished;
+  } catch(err){ /* ignore */ }
+  steps.forEach(a => a.cancel()); if (bob) bob.cancel();
+  z.getAnimations().forEach(a => a.cancel());
+  legs.getAnimations().forEach(a => a.cancel());
+  eye.look(0,0); eye.idle();
+  logo.classList.remove('walking');
+}
+function startWalking(logo){
+  if (RM) return;
+  let busy = false;
+  const go = async () => {
+    if (busy || document.hidden) return;
+    busy = true; await walkOnce(logo); busy = false;
+  };
+  setTimeout(go, 3000);
+  setInterval(go, 15000);
 }
 
 mountLogos();
@@ -1837,12 +2086,12 @@ $('#tyBack').addEventListener('click', closeThanks);
   const scene = document.createElement('div'); scene.className = 'fx-scene'; scene.setAttribute('aria-hidden','true');
   scene.innerHTML = '<div class="fx-aurora a1"></div><div class="fx-aurora a2"></div>';
   const objs = [
-    {k:'cube',x:'6%', y:'16%',s:96, d:.14,t:26,m:0},
-    {k:'cube',x:'90%',y:'26%',s:64, d:.22,t:20,m:0},
-    {k:'ring',x:'82%',y:'60%',s:150,d:.10,t:30,m:1},
-    {k:'cube',x:'10%',y:'66%',s:72, d:.18,t:24,m:1},
-    {k:'ring',x:'20%',y:'38%',s:110,d:.08,t:34,m:1},
-    {k:'cube',x:'74%',y:'86%',s:84, d:.12,t:28,m:1}
+    {k:'cube',x:'6%', y:'16%',s:54, d:.14,t:26,m:0},
+    {k:'cube',x:'90%',y:'26%',s:38, d:.22,t:20,m:0},
+    {k:'ring',x:'82%',y:'60%',s:70,d:.10,t:30,m:1},
+    {k:'cube',x:'10%',y:'66%',s:44, d:.18,t:24,m:1},
+    {k:'ring',x:'20%',y:'38%',s:62,d:.08,t:34,m:1},
+    {k:'cube',x:'74%',y:'86%',s:48, d:.12,t:28,m:1}
   ];
   objs.forEach(o => {
     const w = document.createElement('div'); w.className = 'fx-obj' + (o.m ? ' hide-m' : '');
@@ -1873,7 +2122,7 @@ $('#tyBack').addEventListener('click', closeThanks);
 </script>
 <script id="fx-v2-js">
 /* ==========================================================================
-   FX V2 — modules: Cursor · Magnetic · Spotlight · Constellation · Dock ·
+   FX V2 — modules: Dock ·
    BackToTop · SectionDots · FormMeter
    ========================================================================== */
 (() => {
@@ -1890,160 +2139,6 @@ $('#tyBack').addEventListener('click', closeThanks);
     if (html) el.innerHTML = html;
     return el;
   };
-
-  /* ------------------------------------------------------------------ *
-   * Pointer bus — one listener shared by cursor, spotlight, magnetics  *
-   * ------------------------------------------------------------------ */
-  const pointer = { x: innerWidth / 2, y: innerHeight / 3, active: false };
-  addEventListener('pointermove', e => {
-    pointer.x = e.clientX;
-    pointer.y = e.clientY;
-    pointer.active = true;
-  }, { passive: true });
-  addEventListener('pointerleave', () => { pointer.active = false; });
-
-  /* ------------------------------------------------------------------ *
-   * 1. Cursor system                                                   *
-   * ------------------------------------------------------------------ */
-  function initCursor() {
-    if (!finePointer || reduced) return;
-    const dot = make('div', 'fx-cursor-dot');
-    const ring = make('div', 'fx-cursor-ring');
-    document.body.append(dot, ring);
-    document.body.classList.add('has-cursor');
-
-    let rx = pointer.x, ry = pointer.y;
-    const interactive = 'a, button, [data-tilt], input, select, .cal-day, .slot';
-
-    const frame = () => {
-      rx = lerp(rx, pointer.x, .16);
-      ry = lerp(ry, pointer.y, .16);
-      dot.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0)`;
-      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-      requestAnimationFrame(frame);
-    };
-    frame();
-
-    document.addEventListener('pointerover', e => {
-      ring.classList.toggle('is-link', !!e.target.closest(interactive));
-    });
-    addEventListener('pointerdown', () => ring.classList.add('is-down'));
-    addEventListener('pointerup', () => ring.classList.remove('is-down'));
-    document.addEventListener('mouseleave', () => document.body.classList.remove('has-cursor'));
-    document.addEventListener('mouseenter', () => document.body.classList.add('has-cursor'));
-  }
-
-  /* ------------------------------------------------------------------ *
-   * 2. Magnetic buttons — uses the `translate` property so it never    *
-   *    fights the existing transform-based tilt.                       *
-   * ------------------------------------------------------------------ */
-  function initMagnetic() {
-    if (!finePointer || reduced) return;
-    const targets = [...document.querySelectorAll('.btn-primary, .btn-lg')];
-    const reach = 70, strength = .32;
-
-    addEventListener('pointermove', () => {
-      targets.forEach(el => {
-        const r = el.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dx = pointer.x - cx;
-        const dy = pointer.y - cy;
-        const near = Math.abs(dx) < r.width / 2 + reach && Math.abs(dy) < r.height / 2 + reach;
-        el.style.translate = near
-          ? `${clamp(dx * strength, -14, 14)}px ${clamp(dy * strength, -10, 10)}px`
-          : '';
-      });
-    }, { passive: true });
-  }
-
-  /* ------------------------------------------------------------------ *
-   * 3. Spotlight that follows the pointer                              *
-   * ------------------------------------------------------------------ */
-  function initSpotlight() {
-    if (!finePointer || reduced) return;
-    const spot = make('div', 'fx-spot');
-    spot.setAttribute('aria-hidden', 'true');
-    document.body.prepend(spot);
-    let sx = pointer.x, sy = pointer.y;
-    (function loop() {
-      sx = lerp(sx, pointer.x, .07);
-      sy = lerp(sy, pointer.y, .07);
-      spot.style.setProperty('--sx', sx.toFixed(1) + 'px');
-      spot.style.setProperty('--sy', sy.toFixed(1) + 'px');
-      requestAnimationFrame(loop);
-    })();
-  }
-
-  /* ------------------------------------------------------------------ *
-   * 4. Constellation canvas — DPR-aware so it stays razor sharp on 4K  *
-   * ------------------------------------------------------------------ */
-  function initConstellation() {
-    if (reduced) return;
-    const canvas = make('canvas', 'fx-net');
-    canvas.setAttribute('aria-hidden', 'true');
-    document.body.prepend(canvas);
-    const ctx = canvas.getContext('2d');
-    let W = 0, H = 0, dpr = 1, nodes = [], running = true;
-    const LINK = 140, GOLD = '255,194,14';
-
-    const resize = () => {
-      dpr = Math.min(devicePixelRatio || 1, 2.5);
-      W = innerWidth; H = innerHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = clamp(Math.round((W * H) / 24000), 22, 90);
-      nodes = Array.from({ length: count }, () => ({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - .5) * .22,
-        vy: (Math.random() - .5) * .22,
-        r: Math.random() * 1.4 + .5
-      }));
-    };
-
-    const step = () => {
-      if (!running) return;
-      ctx.clearRect(0, 0, W, H);
-      for (const n of nodes) {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0 || n.x > W) n.vx *= -1;
-        if (n.y < 0 || n.y > H) n.vy *= -1;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, 6.2832);
-        ctx.fillStyle = `rgba(${GOLD},.75)`;
-        ctx.fill();
-      }
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < LINK) link(nodes[i], nodes[j], (1 - d / LINK) * .22);
-        }
-        if (pointer.active) {
-          const d = Math.hypot(nodes[i].x - pointer.x, nodes[i].y - pointer.y);
-          if (d < LINK * 1.6) link(nodes[i], pointer, (1 - d / (LINK * 1.6)) * .55);
-        }
-      }
-      requestAnimationFrame(step);
-    };
-    const link = (a, b, alpha) => {
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = `rgba(${GOLD},${alpha.toFixed(3)})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    };
-
-    resize();
-    addEventListener('resize', resize, { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      running = !document.hidden;
-      if (running) step();
-    });
-    step();
-  }
 
   /* ------------------------------------------------------------------ *
    * 5. Mobile booking dock                                             *
@@ -2169,12 +2264,25 @@ $('#tyBack').addEventListener('click', closeThanks);
   /* ------------------------------------------------------------------ *
    * Boot — each module is isolated so one failure never breaks the page *
    * ------------------------------------------------------------------ */
-  [initCursor, initMagnetic, initSpotlight, initConstellation,
-   initDock, initBackToTop, initSectionDots, initFormMeter].forEach(fn => {
+  [initDock, initBackToTop, initSectionDots, initFormMeter].forEach(fn => {
     try { fn(); } catch (err) { console.warn('[fx-v2]', fn.name, err); }
+  });
+})();
+</script>
+<script id="rocket-msg">
+/* Rocket messages — a new line each 45s flight, cycling in order */
+(() => {
+  const rocket = document.querySelector('.fx-rocket');
+  const tag = document.getElementById('rkTag');
+  if (!rocket || !tag) return;
+  const messages = ['مبيعاتك هتطير', 'ابدأ الآن', 'أوردراتك هتطير'];
+  let i = 0;
+  rocket.addEventListener('animationiteration', e => {
+    if (e.animationName !== 'rk-fly') return;
+    i = (i + 1) % messages.length;
+    tag.textContent = messages[i];
   });
 })();
 </script>
 </body>
 </html>
-
